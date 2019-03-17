@@ -10,6 +10,29 @@ from colors import ORANGE, WHITE
 import random
 
 # =============================================================================
+# >> FILTERS
+# =============================================================================
+def player_filter(value):
+    value = str(value).lower()
+    
+    if value in ["all", "bot", "human", "bot", "alive", "dead"]:
+        yield from PlayerIter(value)
+    elif value == "blu":
+        yield from PlayerIter("ct")
+    elif value == "red":
+        yield from PlayerIter("t")
+    elif value == "spec":
+        yield from PlayerIter("spec")
+        yield from PlayerIter("un")
+    else:
+        for player in PlayerIter():
+            if player.name.lower().startswith(value):
+                yield player
+                break
+        else:
+            raise Exception
+
+# =============================================================================
 # >> COMMANDS
 # =============================================================================
 @TypedSayCommand("!spec", permission="admin.move_players")
@@ -65,26 +88,3 @@ def on_name(command_info, players:player_filter):
 def on_steamid(command_info, players:player_filter):
     for player in players:
         command_info.reply(f"{WHITE}Name: {ORANGE}{player.name}{WHITE}, STEAM_ID: {ORANGE}{player.steamid}")
-
-# =============================================================================
-# >> FILTERS
-# =============================================================================
-def player_filter(value):
-    value = str(value).lower()
-    
-    if value in ["all", "bot", "human", "bot", "alive", "dead"]:
-        yield from PlayerIter(value)
-    elif value == "blu":
-        yield from PlayerIter("ct")
-    elif value == "red":
-        yield from PlayerIter("t")
-    elif value == "spec":
-        yield from PlayerIter("spec")
-        yield from PlayerIter("un")
-    else:
-        for player in PlayerIter():
-            if player.name.lower().startswith(value):
-                yield player
-                break
-        else:
-            raise Exception

@@ -35,6 +35,35 @@ def load():
     LOG_PLAYERS_LOOP.start(5, execute_on_start=True)
 
 # =============================================================================
+# >> UTILITY FUNCTIONS
+# =============================================================================
+def threaded(fn):
+    def wrapper(*args, **kwargs):
+        thread = GameThread(target=fn, args=args, kwargs=kwargs)
+        thread.daemon = True
+        thread.start()
+    return wrapper
+    
+@threaded
+def log_value(logfile, value):
+    with open(os.path.join(LOG_PATH, logfile), "w") as file:
+        file.truncate()
+        file.write(str(value))
+
+@threaded
+def log_json(event_name, event_data, logfile="event.log"):
+    timestamp = int(time.time())
+
+    message = {
+        "time": timestamp,
+        "event_name": event_name,
+        "event": event_data
+    }
+    with open(os.path.join(LOG_PATH, logfile), "a") as file:
+        file.write(json.dumps(message))
+        file.write("\n")
+
+# =============================================================================
 # >> EVENT HANDLERS
 # =============================================================================
 @OnLevelInit
@@ -233,32 +262,3 @@ def log_players():
     log_value("players", players)
     log_value("bots", bots)
     log_value("spectators", spectators)
-
-# =============================================================================
-# >> UTILITY FUNCTIONS
-# =============================================================================
-def threaded(fn):
-    def wrapper(*args, **kwargs):
-        thread = GameThread(target=fn, args=args, kwargs=kwargs)
-        thread.daemon = True
-        thread.start()
-    return wrapper
-    
-@threaded
-def log_value(logfile, value):
-    with open(os.path.join(LOG_PATH, logfile), "w") as file:
-        file.truncate()
-        file.write(str(value))
-
-@threaded
-def log_json(event_name, event_data, logfile="event.log"):
-    timestamp = int(time.time())
-
-    message = {
-        "time": timestamp,
-        "event_name": event_name,
-        "event": event_data
-    }
-    with open(os.path.join(LOG_PATH, logfile), "a") as file:
-        file.write(json.dumps(message))
-        file.write("\n")

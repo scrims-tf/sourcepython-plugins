@@ -57,6 +57,11 @@ def load():
 
     GAMEMODES = load_config("gamemodes.json")
 
+    if CURRENT_MODE is None:
+        CURRENT_MODE = GAMEMODES['DEFAULT']
+        rand = random.choice(GAMEMODES[CURRENT_MODE]["maps"])
+        change_level(rand['map'], rand['config'])
+    
 @OnLevelInit
 def on_level_init(map_name):
     global CURRENT_MAP
