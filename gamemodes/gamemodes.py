@@ -91,7 +91,7 @@ def on_level_init(map_name):
 # >> COMMANDS
 # =============================================================================
 @TypedSayCommand("!menu", permission="gamemode.menu")
-def on_say_main_menu(command_info):
+def on_main_menu(command_info):
     show_main_menu(command_info.index)
     
 @TypedSayCommand("!rtv", permission="gamemode.vote")

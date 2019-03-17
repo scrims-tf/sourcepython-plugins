@@ -80,7 +80,7 @@ def on_name(command_info, players:player_filter, new_name:str):
         player.set_name(new_name)
 
 @TypedSayCommand("!noclip", permission="admin.noclip")
-def on_name(command_info, players:player_filter):
+def on_noclip(command_info, players:player_filter):
     for player in players:
         player.set_noclip(not player.noclip)
 
