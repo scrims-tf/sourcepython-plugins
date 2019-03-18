@@ -88,8 +88,11 @@ def get_attribute(name):
     """
     with open("/opt/attributes.ini") as file:
         for line in file:
-            key, value = line.split("=", 1)
-            value.rstrip("\n\r")
+            try:
+               key, value = line.split("=", 1)
+               value.rstrip("\n\r")
+            except ValueError:
+                continue
 
             if key == name:
                 return value
