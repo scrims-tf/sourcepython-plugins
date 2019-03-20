@@ -34,7 +34,7 @@ def on_time(command_info):
 @TypedSayCommand("!shutdown", permission="reservation.shutdown")
 def on_shutdown(command_info):
     alert(f"Server scheduled for shutdown by admin request")
-    shutdown()
+    Delay(5, lambda: shutdown())  
 
 @TypedSayCommand("!restart", permission="reservation.restart")
 def on_restart(command_info):
