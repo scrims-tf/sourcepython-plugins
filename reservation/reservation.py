@@ -3,7 +3,7 @@
 # =============================================================================
 # Source.Python Imports
 from colors import ORANGE, WHITE
-from commands.typed import TypedSayCommand, TypedServerCommand
+from commands.typed import TypedSayCommand, TypedServerCommand, TypedClientCommand
 from messages import SayText2
 from engines.server import execute_server_command
 from listeners.tick import Delay
@@ -16,6 +16,7 @@ import time
 # >> COMMANDS
 # =============================================================================
 @TypedSayCommand("!extend", permission="reservation.extend")
+@TypedClientCommand("sp_extend", permission="reservation.extend")
 def on_extend(command_info):
     if get_remaining_time() > 30*60:
         remaining = readable_time(get_remaining_time())
@@ -27,16 +28,19 @@ def on_extend(command_info):
         alert(f"Reservation been extended by {ORANGE}1 hour{WHITE}. Time remaining: {ORANGE}{remaining}")
 
 @TypedSayCommand("!time", permission="reservation.time")
+@TypedClientCommand("sp_time", permission="reservation.time")
 def on_time(command_info):
     remaining = readable_time(get_remaining_time())
     SayText2(f"Time remaining: {ORANGE}{remaining}").send()
 
 @TypedSayCommand("!shutdown", permission="reservation.shutdown")
+@TypedClientCommand("sp_shutdown", permission="reservation.shutdown")
 def on_shutdown(command_info):
     alert(f"Server scheduled for shutdown by admin request")
     Delay(5, lambda: shutdown())  
 
 @TypedSayCommand("!restart", permission="reservation.restart")
+@TypedClientCommand("sp_extend", permission="reservation.restart")
 def on_restart(command_info):
     alert(f"Server will restart in {ORANGE}10 {WHITE}seconds by admin request")
     Delay(10, lambda: execute_server_command("_restart"))

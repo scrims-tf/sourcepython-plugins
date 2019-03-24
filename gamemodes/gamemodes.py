@@ -3,7 +3,7 @@
 # =============================================================================
 # Source.Python Imports
 from colors import ORANGE, WHITE
-from commands.typed import TypedSayCommand, TypedServerCommand
+from commands.typed import TypedSayCommand, TypedServerCommand, TypedClientCommand
 from cvars import ConVar
 from engines.server import execute_server_command
 from filters.players import PlayerIter
@@ -91,11 +91,13 @@ def on_level_init(map_name):
 # >> COMMANDS
 # =============================================================================
 @TypedSayCommand("!menu", permission="gamemode.menu")
+@TypedClientCommand("sp_menu", permission="gamemode.menu")
 def on_main_menu(command_info):
     show_main_menu(command_info.index)
     
 @TypedSayCommand("!rtv", permission="gamemode.vote")
 @TypedSayCommand("!vote", permission="gamemode.vote")
+@TypedClientCommand("sp_vote", permission="gamemode.vote")
 def on_vote(command_info):
     global CURRENT_VOTE_IN_PROGRESS
     

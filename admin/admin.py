@@ -36,21 +36,25 @@ def player_filter(value):
 # >> COMMANDS
 # =============================================================================
 @TypedSayCommand("!spec", permission="admin.move_players")
+@TypedClientCommand("sp_spec", permission="admin.move_players")
 def on_move_to_spec(command_info, players:player_filter):
     for player in players:
         player.set_team(1)
 
 @TypedSayCommand("!blu", permission="admin.move_players")
+@TypedClientCommand("sp_blu", permission="admin.move_players")
 def on_move_to_blu(command_info, players:player_filter):
     for player in players:
         player.set_team(3)
         
 @TypedSayCommand("!red", permission="admin.move_players")
+@TypedClientCommand("sp_red", permission="admin.move_players")
 def on_move_to_red(command_info, players:player_filter):
     for player in players:
         player.set_team(2)
         
 @TypedSayCommand("!kick", permission="admin.kick")
+@TypedClientCommand("sp_kick", permission="admin.kick")
 def on_kick(command_info, players:player_filter):
     kicker = Player(command_info.index)
     
@@ -58,16 +62,20 @@ def on_kick(command_info, players:player_filter):
         player.kick(f"You were kicked by {kicker.name}")
     
 @TypedSayCommand("!mute", permission="admin.mute")
+@TypedClientCommand("sp_mute", permission="admin.mute")
 def on_mute(command_info, players:player_filter):
     for player in players:
         player.mute()
 
 @TypedSayCommand("!unmute", permission="admin.mute")
+@TypedClientCommand("sp_unmute", permission="admin.mute")
 def on_unmute(command_info, players:player_filter):
     for player in players:
         player.unmute()
 
+@TypedSayCommand("!slay", permission="admin.slay")
 @TypedSayCommand("!kys", permission="admin.slay")
+@TypedClientCommand("sp_slay", permission="admin.slay")
 def on_kys(command_info, players:player_filter):
     for player in players:
         if player.team in [2,3]:
@@ -75,16 +83,19 @@ def on_kys(command_info, players:player_filter):
             player.slay()
 
 @TypedSayCommand("!name", permission="admin.rename")
+@TypedClientCommand("sp_name", permission="admin.rename")
 def on_name(command_info, players:player_filter, new_name:str):
     for player in players:
         player.set_name(new_name)
 
 @TypedSayCommand("!noclip", permission="admin.noclip")
+@TypedClientCommand("sp_noclip", permission="admin.noclip")
 def on_noclip(command_info, players:player_filter):
     for player in players:
         player.set_noclip(not player.noclip)
 
 @TypedSayCommand("!steamid", permission="admin.info")
+@TypedClientCommand("sp_steamid", permission="admin.info")
 def on_steamid(command_info, players:player_filter):
     for player in players:
         command_info.reply(f"{WHITE}Name: {ORANGE}{player.name}{WHITE}, STEAM_ID: {ORANGE}{player.steamid}")
