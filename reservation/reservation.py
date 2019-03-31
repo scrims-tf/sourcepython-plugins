@@ -40,7 +40,7 @@ def on_shutdown(command_info):
     Delay(5, lambda: shutdown())  
 
 @TypedSayCommand("!restart", permission="reservation.restart")
-@TypedClientCommand("sp_extend", permission="reservation.restart")
+@TypedClientCommand("sp_restart", permission="reservation.restart")
 def on_restart(command_info):
     alert(f"Server will restart in {ORANGE}10 {WHITE}seconds by admin request")
     Delay(10, lambda: execute_server_command("_restart"))
