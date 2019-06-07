@@ -2,7 +2,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from commands.typed import TypedSayCommand
+from commands.typed import TypedSayCommand, TypedClientCommand
 from filters.players import PlayerIter, Player
 from colors import ORANGE, WHITE
 
