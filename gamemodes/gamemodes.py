@@ -288,11 +288,15 @@ def change_level(map, config):
     for player in PlayerIter('human'):
         player.play_sound("items/cart_explode_trigger.wav")
     
-    def do():
+    def do_exec_config():
         set_hostname()
         execute_server_command("exec", CURRENT_CONFIG)
+        
+    def do_changel_level():
         execute_server_command("changelevel", CURRENT_MAP)
-    Delay(5, do)
+        
+    Delay(3, do_exec_config)
+    Delay(5, do_change_level)
     
 def set_hostname():
     global CVAR_HOSTNAME
