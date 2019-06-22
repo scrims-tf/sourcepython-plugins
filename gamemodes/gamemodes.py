@@ -292,7 +292,7 @@ def change_level(map, config):
         set_hostname()
         execute_server_command("exec", CURRENT_CONFIG)
         
-    def do_changel_level():
+    def do_change_level():
         execute_server_command("changelevel", CURRENT_MAP)
         
     Delay(3, do_exec_config)
