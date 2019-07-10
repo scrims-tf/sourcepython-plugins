@@ -2,7 +2,9 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from commands.typed import TypedSayCommand
+from commands.typed import TypedSayCommand, TypedClientCommand
+from engines.server import engine_server
+from entities.helpers import index_from_edict
 from filters.players import PlayerIter, Player
 from colors import ORANGE, WHITE
 
@@ -99,3 +101,15 @@ def on_noclip(command_info, players:player_filter):
 def on_steamid(command_info, players:player_filter):
     for player in players:
         command_info.reply(f"{WHITE}Name: {ORANGE}{player.name}{WHITE}, STEAM_ID: {ORANGE}{player.steamid}")
+
+@TypedSayCommand("!rup", permission="admin.rup")
+@TypedClientCommand("rup", permission="admin.rup")
+def on_rup(command_info):
+    teams = {"RED":2, "BLU": 3}
+    for team_name, team_id in teams.items():
+        fake_client = engine_server.create_fake_client(f'RUP BOT {team_name}')
+        fake_player = Player(index_from_edict(fake_client))
+        fake_player.team = team_id
+        fake_player.client_command("tournament_readystate 1", True)
+        fake_player.kick()        
+        
