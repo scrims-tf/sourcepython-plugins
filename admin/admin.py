@@ -54,12 +54,18 @@ def on_move_to_blu(command_info, players:player_filter):
 def on_move_to_red(command_info, players:player_filter):
     for player in players:
         player.set_team(2)
+
+@TypedSayCommand("!ban", permission="admin.kick")
+@TypedClientCommand("sp_ban", permission="admin.kick")
+def on_ban(command_info, players:player_filter):
+    kicker = Player(command_info.index)
+    for player in players:
+        player.ban()
         
 @TypedSayCommand("!kick", permission="admin.kick")
 @TypedClientCommand("sp_kick", permission="admin.kick")
 def on_kick(command_info, players:player_filter):
     kicker = Player(command_info.index)
-    
     for player in players:
         player.kick(f"You were kicked by {kicker.name}")
     
