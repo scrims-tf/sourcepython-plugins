@@ -11,6 +11,7 @@ import paths
 # Core Imports
 from os import walk
 from os.path import abspath, join, basename
+import re
 
 # =============================================================================
 # >> COMMANDS
@@ -38,6 +39,7 @@ def sp_exec(cfg_file):
         print(f"SP_EXEC: Executing {cfg}...")
         for line in file:
             nline = line.replace("\n", "")
+            nline = re.sub("\ ?//.*$", "", nline)
 
             # Find next file to exec
             if nline.startswith("exec "):
@@ -45,8 +47,10 @@ def sp_exec(cfg_file):
                 if len(args) != 2:
                     print(f"Invalid exec command: {nline}")
                     continue
-                    
-                sp_exec(args[1])
+                
+                target = args[1].replace("\"", "")
+                target = re.sub(".cfg$", "", target)
+                sp_exec(target)
                 continue
             
             # Run command or set cvar
