@@ -11,6 +11,7 @@ from filters.players import PlayerIter
 
 # Core Imports
 import time
+import json
 
 # =============================================================================
 # >> COMMANDS
@@ -37,7 +38,7 @@ def on_time(command_info):
 @TypedClientCommand("sp_shutdown", permission="reservation.shutdown")
 def on_shutdown(command_info):
     alert(f"Server scheduled for shutdown by admin request")
-    Delay(5, lambda: shutdown())  
+    Delay(5, lambda: shutdown())
 
 @TypedSayCommand("!restart", permission="reservation.restart")
 @TypedClientCommand("sp_restart", permission="reservation.restart")
@@ -63,43 +64,37 @@ def extend_time(minutes):
     old = int(get_attribute("ttl"))
     new = int(old + minutes)
 
-    with open("/opt/attributes.ini", "r") as file:
-        contents = file.read()
-    
-    with open("/opt/attributes.ini", "w") as file:
-        file.write(contents.replace(f"ttl={old}", f"ttl={new}"))
+    set_attribute("ttl", new)
 
 def shutdown():
     """
         Schedules the server for shutdown by setting the TTL to 0
     """
-    old = int(get_attribute("ttl"))
-    new = 0
-
-    with open("/opt/attributes.ini", "r") as file:
-        contents = file.read()
-    
-    with open("/opt/attributes.ini", "w") as file:
-        file.write(contents.replace(f"ttl={old}", f"ttl={new}"))
+    set_attribute("ttl", 0)
     
     for player in PlayerIter('human'):
         player.kick("Reservation ended. Thanks for playing!")
 
 def get_attribute(name):
     """
-        Get an attribute from the global attribute file
-        Attributes are variables passed into the machine at boot time
+        Get an attribute from the tags file
+        Tags are variables passed into the machine at boot time and rendered into this file
     """
-    with open("/opt/attributes.ini") as file:
-        for line in file:
-            try:
-               key, value = line.split("=", 1)
-               value.rstrip("\n\r")
-            except ValueError:
-                continue
+    with open("/opt/tags.json") as file:
+        tags = json.load(file)
+        return tags.get(name)
 
-            if key == name:
-                return value
+def set_attribute(name, value):
+    """
+        Set an attribute in the tags file
+    """
+    with open("/opt/tags.json") as file:
+        tags = json.load(file)
+    
+    tags[name] = value
+    
+    with open("/opt/tags.json") as file:
+        json.dump(file)
 
 def get_remaining_time():
     """
@@ -107,10 +102,10 @@ def get_remaining_time():
         Returns number of seconds left on the reservation
     """
     ttl = int(get_attribute("ttl"))
-    boottime = int(get_attribute("boottime"))
+    launch_time = int(get_attribute("launch_time"))
     
     ttl = ttl * 60
-    elapsed = time.time() - boottime
+    elapsed = time.time() - launch_time
     remaining = ttl - elapsed if ttl > elapsed else 0
     
     return remaining
