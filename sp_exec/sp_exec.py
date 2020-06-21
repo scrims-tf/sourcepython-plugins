@@ -38,8 +38,7 @@ def sp_exec(cfg_file):
     with open(cfg) as file:
         print(f"SP_EXEC: Executing {cfg}...")
         for line in file:
-            nline = line.replace("\n", "")
-            nline = re.sub("\ ?//.*$", "", nline)
+            nline = normalize_line(line)
 
             # Find next file to exec
             if nline.startswith("exec "):
@@ -48,22 +47,50 @@ def sp_exec(cfg_file):
                     print(f"Invalid exec command: {nline}")
                     continue
                 
-                target = args[1].replace("\"", "")
-                target = re.sub(".cfg$", "", target)
+                target = re.sub(".cfg$", "", args[1])
                 sp_exec(target)
                 continue
-            
+            elif nline.startswith("mp_tournament_whitelist "):
+                args = nline.split(" ", 1)
+                if len(args) != 2:
+                    print(f"Invalid whitelist command: {nline}")
+                    continue
+    
+                target = re.sub(".txt$", "", args[1])
+                file = search_for_cfg(target, extension="txt")
+
+                with open(file, 'rb') as src, open(join(paths.GAME_PATH, "cfg/whitelist.txt"), 'wb') as dst:
+                    dst.write(src.read())
+                
+                ConVar("mp_tournament_whitelist").set_string("cfg/whitelist.txt")
+
+                continue
             # Run command or set cvar
-            base = cvar.find_base(nline)
+            not_commands = ["sv_pure", "log", "tv_msg"]
+            
+            var = nline.split(" ", 1)[0]
+            base = cvar.find_base(var)
             if base is None:
                 continue
-            elif base.is_command():
-                execute_server_command(nline)
+            elif base.is_command() and var not in not_commands:
+                try:
+                    execute_server_command(nline)
+                except Exception as e:
+                    print(e)
+                    continue
             else:
                 var, val = nline.split(" ", 1)
                 ConVar(var).set_string(val)
 
-def search_for_cfg(filename):
+def normalize_line(line):
+    line = line.replace("\n", "")
+    line = re.sub(" ?//.*$", "", line)
+    line = re.sub("\t", " ", line)
+    line = re.sub("\"", "", line)
+    
+    return line
+
+def search_for_cfg(filename, extension="cfg"):
     """
         Finds a cfg inside of srcds's default search paths
         Returns the first matching cfg it can find
@@ -73,7 +100,7 @@ def search_for_cfg(filename):
     for search_path in search_paths:
         for root, dirs, files in walk(join(paths.GAME_PATH, search_path)):
             for file in files:
-                if file.endswith(f"{basename(filename)}.cfg"):
+                if file.endswith(f"{basename(filename)}.{extension}"):
                     return abspath(join(root, file))
 
     return False
