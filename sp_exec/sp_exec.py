@@ -65,19 +65,14 @@ def sp_exec(cfg_file):
                 ConVar("mp_tournament_whitelist").set_string("cfg/whitelist.txt")
 
                 continue
+
             # Run command or set cvar
-            not_commands = ["sv_pure", "log", "tv_msg"]
-            
             var = nline.split(" ", 1)[0]
             base = cvar.find_base(var)
             if base is None:
                 continue
-            elif base.is_command() and var not in not_commands:
-                try:
-                    execute_server_command(nline)
-                except Exception as e:
-                    print(e)
-                    continue
+            elif base.is_command():
+                execute_server_command(*nline.split(" "))
             else:
                 var, val = nline.split(" ", 1)
                 ConVar(var).set_string(val)
