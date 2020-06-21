@@ -61,7 +61,7 @@ def load():
     CVAR_HOSTNAME = ConVar("sp_hostname", "TF2 Server", description="Cannonical name of the server")
     CVAR_LOCATION = ConVar("sp_location", "Pyroland", description="City the server is located in")
 
-    GAMEMODES = load_config("gamemodes.json")
+    GAMEMODES = load_config("cfg/custom/gamemodes.json")
 
     if CURRENT_MODE is None:
         CURRENT_MODE = GAMEMODES['DEFAULT']
@@ -114,7 +114,7 @@ def on_level_init(map_name):
 @TypedClientCommand("sp_menu", permission="gamemode.menu")
 def on_main_menu(command_info):
     global GAMEMODES
-    GAMEMODES = load_config("gamemodes.json")
+    GAMEMODES = load_config("cfg/custom/gamemodes.json")
     show_main_menu(command_info.index)
     
 @TypedSayCommand("!rtv", permission="gamemode.vote")
