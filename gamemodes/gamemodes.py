@@ -114,7 +114,7 @@ def on_level_init(map_name):
 @TypedClientCommand("sp_menu", permission="gamemode.menu")
 def on_main_menu(command_info):
     global GAMEMODES
-    GAMEMODES = load_config("cfg/custom/gamemodes.json")
+    GAMEMODES = load_config("gamemodes.json")
     show_main_menu(command_info.index)
     
 @TypedSayCommand("!rtv", permission="gamemode.vote")
