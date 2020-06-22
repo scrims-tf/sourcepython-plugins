@@ -72,7 +72,7 @@ def load():
                 CURRENT_CONFIGS = configs
                 CURRENT_CONFIG = CURRENT_CONFIGS[0]
                 set_hostname()
-                execute_server_command("sp_exec", CURRENT_CONFIGS[0])
+                execute_server_command("exec", CURRENT_CONFIGS[0])
 
 @OnLevelInit
 def on_level_init(map_name):
@@ -85,7 +85,7 @@ def on_level_init(map_name):
 
     if CURRENT_CONFIG is not None:
         def do():
-            execute_server_command("sp_exec", CURRENT_CONFIG)
+            execute_server_command("exec", CURRENT_CONFIG)
             set_hostname()
         Delay(1, do)
 
@@ -97,7 +97,7 @@ def on_level_init(map_name):
                 CURRENT_CONFIGS = configs
                 CURRENT_CONFIG = CURRENT_CONFIGS[0]
                 set_hostname()
-                execute_server_command("sp_exec", CURRENT_CONFIGS[0])
+                execute_server_command("exec", CURRENT_CONFIGS[0])
         
     if GAMEMODES[CURRENT_MODE]['shuffle']:
         mode = GAMEMODES[CURRENT_MODE]
@@ -158,7 +158,7 @@ def on_select_submenu(options, index, choice):
     elif choice.value == MenuChoice.SET_CONFIG:
         show_set_config_menu(index)
     elif choice.value == MenuChoice.END_ROUND:
-        execute_server_command("sp_exec", "endround")
+        execute_server_command("exec", "endround")
     elif choice.value == MenuChoice.CALL_MAP_VOTE:
         global CURRENT_VOTE_IN_PROGRESS
         
@@ -357,7 +357,7 @@ def change_level(map, config):
     
     def do_exec_config():
         set_hostname()
-        execute_server_command("sp_exec", CURRENT_CONFIG)
+        execute_server_command("exec", CURRENT_CONFIG)
         
     def do_change_level():
         execute_server_command("changelevel", CURRENT_MAP)
