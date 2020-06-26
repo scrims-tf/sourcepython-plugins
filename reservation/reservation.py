@@ -93,7 +93,7 @@ def set_attribute(name, value):
     
     tags[name] = value
     
-    with open("/opt/tags.json") as file:
+    with open("/opt/tags.json", "w") as file:
         json.dump(tags, file)
 
 def get_remaining_time():
