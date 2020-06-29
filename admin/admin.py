@@ -82,7 +82,6 @@ def on_unmute(command_info, players:player_filter):
         player.unmute()
 
 @TypedSayCommand("!slay", permission="admin.slay")
-@TypedSayCommand("!kys", permission="admin.slay")
 @TypedClientCommand("sp_slay", permission="admin.slay")
 def on_kys(command_info, players:player_filter):
     for player in players:
@@ -117,5 +116,5 @@ def on_rup(command_info):
         fake_player = Player(index_from_edict(fake_client))
         fake_player.team = team_id
         fake_player.client_command("tournament_readystate 1", True)
-        fake_player.kick()        
+        fake_player.kick()
         
