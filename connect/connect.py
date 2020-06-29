@@ -28,6 +28,9 @@ def announce(message):
 def on_connect(event):
     args = event.variables.as_dict()
 
+    if bool(args['bot']):
+        return EventAction.STOP_BROADCAST
+
     if event.name == "player_connect":
         announce(f"{ORANGE}{args['name']} {WHITE}joined the server.")
 
@@ -36,6 +39,9 @@ def on_connect(event):
 @PreEvent('player_disconnect')
 def on_disconnect(event):
     args = event.variables.as_dict()
+    
+    if bool(args['bot']):
+        return EventAction.STOP_BROADCAST
     
     funny_reasons = [
         "Rage quit...",
@@ -61,6 +67,10 @@ def on_jointeam(event):
     args = event.variables.as_dict()
 
     player = Player.from_userid(args['userid'])
+    
+    if player.is_bot:
+        return EventAction.STOP_BROADCAST
+
     new_team = args['team']
     old_team = args['oldteam']
     disconnect = bool(args['disconnect'])
