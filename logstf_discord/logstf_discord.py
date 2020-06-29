@@ -64,14 +64,15 @@ def handle_logupload(logid):
     log_data = response.json()
 
     date = datetime.fromtimestamp(log_data['info']['date'], timezone.utc).astimezone()
-    date = date.strftime("%B %d, %Y @ %I:%M %p %Z")
+    # date = date.strftime("%B %d, %Y @ %I:%M %p %Z")
     link = f"https://logs.tf/{logid}"
     title = log_data['info']['title']
     map = log_data['info']['map']
 
     embed = {
         "title": title,
-        "description": f"*{date}*\n{map}\n\n**{link}**"
+        "description": f"*{date}*\n{map}\n\n**{link}**",
+        "timestamp": date.isoformat()
     }
     global CVAR_DISCORD_CHANNEL
     channel_id = CVAR_DISCORD_CHANNEL.get_string()
