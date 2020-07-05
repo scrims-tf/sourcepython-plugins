@@ -45,6 +45,7 @@ GAMEMODES = {}
 # ConVars
 CVAR_HOSTNAME = None
 CVAR_LOCATION = None
+CVAR_GAMEMODE = None
 
 # =============================================================================
 # >> ON LOAD
@@ -57,14 +58,17 @@ def load():
     global GAMEMODES
     global CVAR_HOSTNAME
     global CVAR_LOCATION
+    global CVAR_GAMEMODE
 
     CVAR_HOSTNAME = ConVar("sp_hostname", "TF2 Server", description="Cannonical name of the server")
     CVAR_LOCATION = ConVar("sp_location", "Pyroland", description="City the server is located in")
+    CVAR_GAMEMODE = ConVar("sp_gamemode", "", description="Gamemode currently on the server")
 
     GAMEMODES = load_config("gamemodes.json")
 
     if CURRENT_MODE is None:
         CURRENT_MODE = GAMEMODES['DEFAULT']
+        CVAR_GAMEMODE.set_string(CURRENT_MODE)
         
         CURRENT_MAP = ConVar("host_map").get_string()
         for prefix, configs in GAMEMODES[CURRENT_MODE]['configs'].items():
@@ -80,6 +84,7 @@ def on_level_init(map_name):
     global CURRENT_MODE
     global CURRENT_CONFIG
     global GAMEMODES
+    global CVAR_GAMEMODE
     
     CURRENT_MAP = map_name
 
@@ -91,7 +96,8 @@ def on_level_init(map_name):
 
     if CURRENT_MODE is None:
         CURRENT_MODE = GAMEMODES['DEFAULT']
-        
+        CVAR_GAMEMODE.set_string(CURRENT_MODE)
+
         for prefix, configs in GAMEMODES[CURRENT_MODE]['configs'].items():
             if CURRENT_MAP.startswith(prefix):
                 CURRENT_CONFIGS = configs
@@ -174,7 +180,11 @@ def on_select_submenu(options, index, choice):
     
 def on_select_mode(options, index, choice):
     global CURRENT_MODE
+    global CVAR_GAMEMODE
+
     CURRENT_MODE = choice.value
+    CVAR_GAMEMODE.set_string(CURRENT_MODE)
+
     SayText2(f"Game mode has been changed to: {ORANGE}{choice.value}").send()
     show_change_map_menu(index)
 
@@ -228,7 +238,9 @@ def on_vote_tally():
     global CURRENT_VOTE
     global CURRENT_VOTE_COUNT
     global CURRENT_VOTE_IN_PROGRESS
-    
+    global CURRENT_MODE
+    global CURRENT_CONFIG
+
     sorted_votes = sorted(CURRENT_VOTE.items(), key=lambda i: i[1], reverse=True)
     choice = None
     
@@ -247,9 +259,6 @@ def on_vote_tally():
     CURRENT_VOTE_IN_PROGRESS = False
     CURRENT_VOTE_COUNT = 0
     CURRENT_VOTE = defaultdict(int)
-
-    global CURRENT_MODE
-    global CURRENT_CONFIG
     
     if choice == "random":
         rand = random.choice(GAMEMODES[CURRENT_MODE]["maps"])
@@ -369,9 +378,10 @@ def change_level(map, config):
 def set_hostname():
     global CVAR_HOSTNAME
     global CVAR_LOCATION
-    global CURRENT_MODE
+    global CVAR_GAMEMODE
 
     hostname = CVAR_HOSTNAME.get_string()
     location = CVAR_LOCATION.get_string()
+    gamemode = CVAR_GAMEMODE.get_string()
 
-    ConVar("hostname").set_string(f"{hostname} | {CURRENT_MODE} | {location}")
+    ConVar("hostname").set_string(f"{hostname} | {gamemode} | {location}")
