@@ -94,9 +94,10 @@ def log_player_connect(event):
             "ip_address": args['address'],
             "name": args['name'],
             "steamid": args['networkid']
-        }
+        },
+        "blank": 0 # needed so telegraf treats this as actual data
     }
-    log_json("player_connect", message)
+    log_json("player_connect", message, logfile="connect.log")
 
     global CONNECTED_PLAYERS
     CONNECTED_PLAYERS[args['networkid']] = {
