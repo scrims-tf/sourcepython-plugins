@@ -211,16 +211,22 @@ def on_match_start():
     open(join(GAME_PATH, f"matches/{MATCH_NAME}.log"), "w").close()
     SayText2(f"Match log: {ORANGE}{MATCH_NAME}.log").send()
 
+    teams = ["un", "spec", "red", "blue"]
+    classes = ["scout", "sniper", "soldier", "demoman", "medic", "heavy", "pyro", "spy", "engineer"]
+
     # TODO: why are these getting eaten?
-    log_print("World triggered \"Round_Start\"")
     for player in PlayerIter("human"):
         log_print(
-            f"\"{player.name}<{player.userid}><{player.steamid}><{player.team_name.capitalize()}>\""
-            f" changed role to \"{ player.class_name.lower()}\""
+            f"\"{player.name}<{player.userid}><{player.steamid}><{teams[player.team].capitalize()}>\""
+            f" changed role to \"{classes[player.player_class - 1].lower()}\""
         )
+
+    log_print("World triggered \"Round_Start\"")
+
+    for player in PlayerIter("human"):  
         log_print(
-            f"\"{player.name}<{player.userid}><{player.steamid}><{player.team_name.capitalize()}>\""
-            f" spawned as \"{ player.class_name.lower()}\""
+            f"\"{player.name}<{player.userid}><{player.steamid}><{teams[player.team].capitalize()}>\""
+            f" spawned as \"{ classes[player.player_class - 1].lower()}\""
         )
 
 @MatchEnd
