@@ -29,6 +29,7 @@ from zipfile import ZipFile
 import re
 import json
 import math
+import warnings
 
 # Third Party Libraries
 import requests
@@ -261,7 +262,8 @@ def upload_all():
 def upload_to_s3():
     global MATCH_NAME
     global CVAR_ARCHIVE_BUCKET
-    
+    warnings.filterwarnings("ignore", category=ResourceWarning, message="unclosed.*<ssl.SSLSocket.*>")
+
     demo_path = join(GAME_PATH, f"matches/{MATCH_NAME}.dem")
     log_path = join(GAME_PATH, f"matches/{MATCH_NAME}.log")
     zip_path = join(GAME_PATH, f"matches/{MATCH_NAME}.zip")
