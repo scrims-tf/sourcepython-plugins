@@ -295,7 +295,7 @@ def upload_to_logstf():
     
     logs_tf_data = {
         "title": f"{MATCH_RED_TEAM_NAME} vs {MATCH_BLUE_TEAM_NAME}",
-        "map": MATCH_MAP_NAME,
+        "map": global_vars.map_name,
         "key": CVAR_LOGSTF_KEY.get_string(),
         "uploader": "SourcePython Match Plugin by Zeus"
     }
