@@ -118,7 +118,8 @@ def on_teamplay_round_restart_seconds(event):
 
     MatchCountdown.manager.notify()
 
-@Event("tf_game_over")
+@Event("tf_game_over")       # Only fires when winlimit reached
+@Event("teamplay_game_over") # Only fires when timelimit reached
 def on_tf_game_over(event):
     global MATCH_IN_PROGRESS
     global MATCH_END_TIME
@@ -174,7 +175,9 @@ def unload():
 def on_showlogs(command_info):
     global MATCH_LOG_URL
 
-    if MATCH_LOG_URL is None:
+    # https://github.com/Source-Python-Dev-Team/Source.Python/issues/315
+    # Seems to crash if people ask for logs too quickly?
+    if MATCH_LOG_URL is None or not isinstance(MATCH_LOG_URL, str):
         SayText2("No log exists yet!").send(command_info.index)
         return
     
@@ -233,7 +236,7 @@ def on_match_start():
 def on_match_end():
     # Stop recording
     execute_server_command("tv_stoprecord")
-    SayText2(f"Recording Complete!").send()
+    SayText2(f"Game over! Uploading logs and demos...").send()
 
     move(join(GAME_PATH, f"{MATCH_NAME}.dem"), join(GAME_PATH, "matches"))
     upload_all()
@@ -243,11 +246,17 @@ def on_match_end():
 # =============================================================================
 @threaded
 def upload_all():
+    global MATCH_NAME
+    global CVAR_ARCHIVE_BUCKET
+
     # Upload logs to logs.tf and demos.tf
     demostf_url = upload_to_demostf()
     logstf_url = upload_to_logstf()
-    s3_url = upload_to_s3()
+    s3_url = "http://{CVAR_ARCHIVE_BUCKET.get_string()}/{MATCH_NAME}/{MATCH_NAME}.zip"
     upload_to_discord(logstf_url, demostf_url, s3_url)
+
+    # S3 upload / compress could take a while so we don't wanna block notifiyng users if this is just an long term archive
+    upload_to_s3()
 
 def upload_to_s3():
     global MATCH_NAME
