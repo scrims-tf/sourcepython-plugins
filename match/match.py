@@ -252,7 +252,7 @@ def upload_all():
     # Upload logs to logs.tf and demos.tf
     demostf_url = upload_to_demostf()
     logstf_url = upload_to_logstf()
-    s3_url = "http://{CVAR_ARCHIVE_BUCKET.get_string()}/{MATCH_NAME}/{MATCH_NAME}.zip"
+    s3_url = f"http://{CVAR_ARCHIVE_BUCKET.get_string()}/{MATCH_NAME}/{MATCH_NAME}.zip"
     upload_to_discord(logstf_url, demostf_url, s3_url)
 
     # S3 upload / compress could take a while so we don't wanna block notifiyng users if this is just an long term archive
