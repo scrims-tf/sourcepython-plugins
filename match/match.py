@@ -320,7 +320,7 @@ def upload_to_demostf():
     global MATCH_BLUE_TEAM_NAME
     
     demos_tf_data = {
-        "title": f"{MATCH_RED_TEAM_NAME} vs {MATCH_BLUE_TEAM_NAME}",
+        "name": f"{MATCH_RED_TEAM_NAME} vs {MATCH_BLUE_TEAM_NAME}",
         "red": MATCH_RED_TEAM_NAME,
         "blu": MATCH_BLUE_TEAM_NAME,
         "key": CVAR_DEMOSTF_KEY.get_string()
