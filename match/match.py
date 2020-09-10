@@ -368,7 +368,7 @@ def upload_to_discord(logstf_url, demostf_url, archive_url):
             },
             {
                 "name": "Reservation ID",
-                "value": f"`{reservation_id}`",
+                "value": f"{reservation_id}",
                 "inline": True
             }
         ],
